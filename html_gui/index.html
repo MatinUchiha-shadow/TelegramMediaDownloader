@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Telegram Downloader — آرشیو تلگرام</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app" class="app">
+
+  <!-- سایدبار -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-logo">⬇</div>
+      <div class="brand-txt">
+        <div class="brand-name">Telegram Downloader</div>
+        <div class="brand-sub">آرشیو کامل چت‌ها</div>
+      </div>
+    </div>
+    <nav class="nav">
+      <button class="nav-item active" data-page="login">🔑 ورود</button>
+      <button class="nav-item" data-page="chats">💬 چت‌ها</button>
+      <button class="nav-item" data-page="download">⬇ دانلود و خروجی</button>
+      <button class="nav-item" data-page="music">🎵 موزیک</button>
+      <button class="nav-item" data-page="android">📱 اپ اندروید</button>
+      <button class="nav-item" data-page="log">📋 لاگ</button>
+    </nav>
+    <div class="sidebar-footer">نسخهٔ ۱.۰<br><span class="muted">ساخته‌شده با ♥</span></div>
+  </aside>
+
+  <!-- محتوا -->
+  <main class="content">
+    <!-- عنوان + نوار وضعیت -->
+    <div class="topbar">
+      <div>
+        <h1 id="pageTitle">ورود به تلگرام</h1>
+        <p id="pageSub" class="page-sub"></p>
+      </div>
+      <div id="topStatus" class="top-status"></div>
+    </div>
+
+    <!-- ===== پنل ورود ===== -->
+    <section class="page" id="page-login">
+      <div class="card">
+        <div class="field">
+          <label for="phone">شماره موبایل — فقط این را وارد کنید</label>
+          <input id="phone" dir="ltr" placeholder="مثلاً 09929184925" autocomplete="off" style="font-size:16px;padding:12px">
+        </div>
+        <div class="field">
+          <label for="proxy_host">پروکسی SOCKS5 — اختیاری (پیش‌فرض 127.0.0.1:1080 یعنی v2rayN/فیلترشکن محلی)</label>
+          <div class="field-row">
+            <input id="proxy_host" dir="ltr" class="grow" placeholder="آدرس (پیش‌فرض 127.0.0.1)" autocomplete="off">
+            <input id="proxy_port" dir="ltr" style="max-width:120px" placeholder="پورت (پیش‌فرض 1080)" autocomplete="off">
+          </div>
+        </div>
+        <button id="sendCodeBtn" class="btn primary" style="padding:13px;font-size:15px">ارسال کد ورود</button>
+
+        <div id="loginStep2" class="hidden">
+          <div class="field">
+            <label for="code">کد ورود</label>
+            <input id="code" dir="ltr" placeholder="کد ۵ رقمی پیامک‌شده" autocomplete="off">
+          </div>
+          <div class="field">
+            <label for="password">رمز دومرحله‌ای</label>
+            <input id="password" dir="ltr" type="password" placeholder="فقط در صورت داشتن" autocomplete="off">
+          </div>
+          <button id="loginBtn" class="btn primary">ورود</button>
+        </div>
+        <div id="loginMsg" class="msg"></div>
+      </div>
+      <div class="hint">
+        برای دریافت api_id و api_hash از
+        <a href="https://my.telegram.org" target="_blank">my.telegram.org</a>
+        وارد شوید و یک اپ بسازید.
+      </div>
+    </section>
+
+    <!-- ===== پنل چت‌ها ===== -->
+    <section class="page hidden" id="page-chats">
+      <div class="toolbar">
+        <input id="chatSearch" class="search" placeholder="جستجوی چت…">
+        <button id="refreshChats" class="btn">بارگذاری چت‌ها</button>
+      </div>
+      <div id="chatList" class="chat-list"></div>
+    </section>
+
+    <!-- ===== پنل دانلود ===== -->
+    <section class="page hidden" id="page-download">
+      <div class="card">
+        <div id="dlChatLabel" class="dl-chat">هنوز چتی انتخاب نشده — از صفحهٔ «چت‌ها» انتخاب کنید.</div>
+
+        <div class="field-row">
+          <input id="dlDir" class="search grow" placeholder="پوشهٔ خروجی">
+          <button id="dlDirBtn" class="btn ghost">انتخاب پوشه</button>
+        </div>
+
+        <div class="checks">
+          <label><input type="checkbox" id="dlMedia" checked> دانلود فایل‌ها و رسانه‌ها</label>
+          <label><input type="checkbox" id="dlText" checked> ذخیرهٔ متن پیام‌ها</label>
+        </div>
+
+        <div class="bar"><div class="bar-label" id="msgBarLabel">—</div><div class="bar-fill" id="msgBar" style="width:0%"></div></div>
+        <div class="bar"><div class="bar-label" id="fileBarLabel"></div><div class="bar-fill" id="fileBar" style="width:0%"></div></div>
+
+        <div id="dlMsg" class="msg"></div>
+
+        <div class="btn-row">
+          <button id="dlStart" class="btn primary">شروع دانلود ⬇</button>
+          <button id="dlStop" class="btn danger" disabled>توقف</button>
+          <button id="dlExport" class="btn" disabled>ساخت خروجی HTML</button>
+          <button id="dlOpen" class="btn ghost">باز کردن پوشه</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== پنل موزیک ===== -->
+    <section class="page hidden" id="page-music">
+      <div class="card music-card">
+        <div class="field-row">
+          <input id="musicRoot" class="search grow" dir="ltr" placeholder="پوشهٔ موزیک — پیش‌فرض: خروجی دانلود">
+          <button id="musicDirBtn" class="btn ghost">انتخاب پوشه</button>
+          <button id="musicScan" class="btn">بارگذاری</button>
+        </div>
+        <div class="toolbar music-toolbar">
+          <input id="musicSearch" class="search grow" placeholder="جستجو در آهنگ‌ها…">
+          <span id="musicCount" class="muted"></span>
+        </div>
+        <div id="musicList" class="music-list"></div>
+      </div>
+
+      <!-- نوار پخش -->
+      <div id="player" class="player hidden">
+        <button id="plPrev" class="pl-btn" title="آهنگ قبلی">⏮</button>
+        <button id="plPlay" class="pl-btn pl-play" title="پخش / توقف">▶</button>
+        <button id="plNext" class="pl-btn" title="آهنگ بعدی">⏭</button>
+        <span class="pl-time" id="plCur">0:00</span>
+        <input id="plSeek" class="pl-seek" type="range" min="0" max="1000" value="0" title="جابه‌جایی">
+        <span class="pl-time" id="plDur">0:00</span>
+        <div class="pl-info">
+          <div id="plTitle" class="pl-title"></div>
+          <div id="plChat" class="pl-chat"></div>
+        </div>
+        <input id="plVol" class="pl-vol" type="range" min="0" max="100" value="100" title="بلندی صدا">
+      </div>
+    </section>
+
+    <!-- ===== پنل اندروید ===== -->
+    <section class="page hidden" id="page-android">
+      <div class="card">
+        <div id="anSrc" class="dl-chat">خروجی: هنوز خروجی‌ای ساخته نشده.</div>
+        <div class="btn-row">
+          <button id="anBuild" class="btn primary">ساخت اپ اندروید 📱</button>
+          <button id="anOpen" class="btn ghost">باز کردن پوشهٔ خروجی</button>
+        </div>
+        <div id="anMsg" class="msg"></div>
+        <div class="hint">
+          پروژهٔ اپ اندروید ساخته می‌شود؛ با Android Studio بازش کنید و Build APK بزنید.
+          هر بار با نام یکتا ساخته می‌شود تا خطای تداخل پیش نیاید.
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== پنل لاگ ===== -->
+    <section class="page hidden" id="page-log">
+      <div class="log-toolbar">
+        <div class="muted">همهٔ رویدادها اینجا ثبت می‌شود.</div>
+        <button id="logClear" class="btn ghost">پاک کردن</button>
+      </div>
+      <pre id="logView" class="log-view"></pre>
+    </section>
+  </main>
+</div>
+
+<script src="qrc:///qtwebchannel/qwebchannel.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

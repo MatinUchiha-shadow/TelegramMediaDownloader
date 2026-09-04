@@ -1,0 +1,223 @@
+/* ============ Telegram Downloader — HTML GUI ============ */
+:root{
+  --bg:#0b101a;
+  --glass:rgba(23,31,48,.72);
+  --glass-2:rgba(255,255,255,.06);
+  --border:rgba(255,255,255,.12);
+  --text:#e6eef7;
+  --muted:#7d8ca3;
+  --accent:#3390ec;
+  --accent-2:#2f86da;
+  --danger:#e5484d;
+  --ok:#3fb950;
+  --radius:14px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  background:radial-gradient(1200px 700px at 15% -10%, #1a2c4d 0%, #0b101a 55%),
+             radial-gradient(1000px 600px at 110% 120%, #12213a 0%, #0b101a 60%);
+  color:var(--text);
+  font-family:"Segoe UI",Vazirmatn,Tahoma,sans-serif;
+  font-size:14px;
+  overflow:hidden;
+}
+button{font-family:inherit;cursor:pointer}
+input{font-family:inherit}
+
+.app{display:flex;height:100vh}
+
+/* ---------- sidebar ---------- */
+.sidebar{
+  width:235px;flex:none;
+  background:rgba(10,15,26,.55);
+  border-inline-end:1px solid var(--border);
+  backdrop-filter:blur(14px);
+  display:flex;flex-direction:column;
+  padding:18px 12px;
+}
+.brand{display:flex;align-items:center;gap:12px;padding:4px 8px 18px}
+.brand-logo{
+  width:40px;height:40px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;background:linear-gradient(135deg,var(--accent),#6a5cff);
+  box-shadow:0 6px 18px rgba(51,144,236,.35);
+}
+.brand-name{font-weight:700;font-size:14px}
+.brand-sub{color:var(--muted);font-size:11px;margin-top:2px}
+
+.nav{display:flex;flex-direction:column;gap:3px}
+.nav-item{
+  background:transparent;border:1px solid transparent;border-radius:10px;
+  color:#b9c6da;font-size:13.5px;text-align:start;
+  padding:11px 13px;transition:.15s;
+}
+.nav-item:hover{background:rgba(255,255,255,.07);color:#fff}
+.nav-item.active{
+  background:rgba(51,144,236,.16);border-color:rgba(51,144,236,.45);
+  color:#fff;font-weight:600;
+}
+.sidebar-footer{margin-top:auto;color:#5f6e85;font-size:11px;padding:8px}
+.muted{color:var(--muted)}
+
+/* ---------- content ---------- */
+.content{flex:1;display:flex;flex-direction:column;padding:22px 28px;overflow:hidden}
+.topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:14px}
+.topbar h1{font-size:21px;font-weight:700}
+.page-sub{color:var(--muted);font-size:12.5px;margin-top:4px;max-width:70ch}
+.top-status{color:var(--muted);font-size:12px;text-align:end;padding-top:6px}
+.top-status.ok{color:var(--ok)}
+.top-status.err{color:var(--danger)}
+
+/* ---------- pages ---------- */
+.page{flex:1;overflow:auto;display:flex;flex-direction:column;padding-inline-end:4px}
+.page.hidden{display:none}
+
+/* ---------- cards ---------- */
+.card{
+  background:var(--glass);border:1px solid var(--border);border-radius:var(--radius);
+  padding:22px;display:flex;flex-direction:column;gap:13px;
+  backdrop-filter:blur(10px);
+  box-shadow:0 18px 45px rgba(0,0,0,.35);
+  max-width:660px;
+}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-size:12.5px;color:var(--muted)}
+.field input,.search{
+  background:rgba(0,0,0,.28);border:1px solid var(--border);border-radius:9px;
+  color:var(--text);padding:10px 13px;font-size:13.5px;outline:none;
+}
+.field input:focus,.search:focus{border-color:var(--accent)}
+.grow{flex:1}
+
+/* ---------- buttons ---------- */
+.btn-row{display:flex;gap:9px;flex-wrap:wrap}
+.btn{
+  background:rgba(255,255,255,.09);border:1px solid var(--border);border-radius:9px;
+  color:#dbe6f5;padding:9px 17px;font-size:13px;transition:.15s;
+}
+.btn:hover{background:rgba(255,255,255,.16)}
+.btn:disabled{opacity:.45;cursor:default}
+.btn.primary{background:var(--accent);border:none;font-weight:600;color:#fff}
+.btn.primary:hover{background:var(--accent-2)}
+.btn.danger{background:var(--danger);border:none;color:#fff}
+.btn.ghost{background:transparent}
+
+/* ---------- messages ---------- */
+.msg{margin-top:4px;font-size:12.5px;color:var(--ok);min-height:1em;white-space:pre-wrap}
+.msg.err{color:var(--danger)}
+.hint{color:#8fa2c0;font-size:12px;margin-top:6px;line-height:1.6}
+.hint a{color:var(--accent)}
+.hidden{display:none !important}
+
+/* ---------- chat list ---------- */
+.toolbar{display:flex;gap:10px;margin-bottom:12px;align-items:center}
+.chat-list{flex:1;overflow:auto;display:flex;flex-direction:column;gap:8px}
+.chat-row{
+  display:flex;align-items:center;gap:13px;background:var(--glass);
+  border:1px solid var(--border);border-radius:12px;padding:11px 14px;cursor:pointer;transition:.15s;
+}
+.chat-row:hover{background:rgba(255,255,255,.1);transform:translateY(-1px)}
+.chat-row.selected{border-color:var(--accent);background:rgba(51,144,236,.14)}
+.chat-icon{
+  width:42px;height:42px;border-radius:12px;flex:none;
+  display:flex;align-items:center;justify-content:center;font-size:19px;
+}
+.chat-meta{flex:1;min-width:0}
+.chat-name{font-weight:600;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chat-sub{color:var(--muted);font-size:11.5px;margin-top:2px}
+.chat-unread{
+  background:var(--accent);color:#fff;border-radius:11px;padding:2px 10px;
+  font-size:11px;font-weight:700;flex:none;
+}
+.empty{color:var(--muted);text-align:center;padding:40px 0}
+
+/* ---------- download ---------- */
+.dl-chat{font-size:14px;font-weight:600}
+.field-row{display:flex;gap:9px}
+.checks{display:flex;gap:20px;flex-wrap:wrap;align-items:center}
+.checks label{display:flex;align-items:center;gap:7px;font-size:13px;cursor:pointer}
+input[type=checkbox]{width:17px;height:17px;accent-color:var(--accent)}
+.bar{
+  position:relative;height:22px;background:rgba(0,0,0,.3);
+  border:1px solid var(--border);border-radius:8px;overflow:hidden;
+}
+.bar-label{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-size:11px;z-index:2;text-shadow:0 1px 3px rgba(0,0,0,.5);
+}
+.bar-fill{height:100%;background:linear-gradient(90deg,var(--accent),#6a5cff);transition:width .18s}
+
+/* ---------- music ---------- */
+#page-music{overflow:hidden}
+.music-card{max-width:860px;width:100%;flex:1;min-height:0}
+.music-card .field-row{flex:none}
+.music-toolbar{flex:none;margin-bottom:0;gap:10px}
+.music-list{
+  flex:1;min-height:0;overflow:auto;
+  display:flex;flex-direction:column;gap:4px;
+  margin:0 -6px;padding:0 6px;
+}
+.music-group{
+  color:var(--muted);font-size:11.5px;font-weight:700;
+  padding:12px 4px 3px;position:sticky;top:0;
+  background:linear-gradient(#0b101a 70%,rgba(11,16,26,0));
+}
+.music-group:first-child{padding-top:2px}
+.song-row{
+  display:flex;align-items:center;gap:11px;
+  background:rgba(255,255,255,.05);border:1px solid transparent;border-radius:10px;
+  padding:8px 11px;cursor:pointer;transition:.15s;
+}
+.song-row:hover{background:rgba(255,255,255,.1)}
+.song-row.playing{border-color:var(--accent);background:rgba(51,144,236,.13)}
+.song-ico{
+  width:34px;height:34px;border-radius:9px;flex:none;
+  background:rgba(51,144,236,.16);color:var(--accent);
+  display:flex;align-items:center;justify-content:center;font-size:15px;
+}
+.song-row.playing .song-ico{background:var(--accent);color:#fff}
+.song-meta{flex:1;min-width:0}
+.song-name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.song-sub{color:var(--muted);font-size:11px;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.song-size{color:var(--muted);font-size:11px;flex:none}
+
+/* نوار پخش */
+.player{
+  flex:none;display:flex;align-items:center;gap:10px;
+  background:var(--glass);border:1px solid var(--border);border-radius:var(--radius);
+  padding:10px 16px;margin-top:12px;backdrop-filter:blur(10px);
+  box-shadow:0 18px 45px rgba(0,0,0,.35);
+}
+.pl-btn{
+  width:38px;height:38px;border-radius:50%;border:1px solid var(--border);flex:none;
+  background:rgba(255,255,255,.08);color:var(--text);font-size:15px;
+  display:flex;align-items:center;justify-content:center;transition:.15s;
+}
+.pl-btn:hover{background:rgba(255,255,255,.16)}
+.pl-btn.pl-play{background:var(--accent);border:none;width:44px;height:44px;font-size:17px}
+.pl-btn.pl-play:hover{background:var(--accent-2)}
+.pl-time{
+  color:var(--muted);font-size:11.5px;flex:none;min-width:34px;text-align:center;
+  font-variant-numeric:tabular-nums;
+}
+.pl-seek{flex:1;min-width:60px}
+.pl-info{flex:1;min-width:120px;max-width:300px;overflow:hidden}
+.pl-title{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pl-chat{color:var(--muted);font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pl-vol{width:90px;flex:none}
+input[type=range]{accent-color:var(--accent);cursor:pointer;height:4px;border-radius:4px}
+
+/* ---------- log ---------- */
+.log-toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.log-view{
+  flex:1;background:rgba(0,0,0,.4);border:1px solid var(--border);border-radius:12px;
+  padding:14px;font-family:Consolas,monospace;font-size:12px;color:#9fc3e8;
+  white-space:pre-wrap;overflow:auto;line-height:1.55;
+}
+
+/* ---------- scrollbar ---------- */
+::-webkit-scrollbar{width:9px;height:9px}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.18);border-radius:5px}
+::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,.3)}
+::-webkit-scrollbar-track{background:transparent}

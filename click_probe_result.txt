@@ -1,0 +1,1 @@
+{"bridge":"object/object","msg":"پایتون در دسترس نیست","msgClass":"msg err","btnDisabled":false,"codeDisabled":true,"phoneVal":"09929184925"}

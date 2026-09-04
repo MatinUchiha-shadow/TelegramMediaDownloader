@@ -1,0 +1,1 @@
+{'ready': True, 'nav': 'browse:Browse|chats:My Chats|downloads:Downloads|api:API', 'send_empty': 'Enter your phone number first.', 'send_phone': 'Code sent ✅ — enter it and press Send Code again.', 'browse_empty': 'Enter @username or link first.', 'browse_set': 'Browsing @test …', 'export': 'Done.', 'all_val': '@test', 'settings': 'Settings', 'logout': 'Logged out.'}

@@ -1,0 +1,35 @@
+# Build outputs
+dist/
+build/
+*.spec
+!TelegramMediaDownloader.spec
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Temp / preview / probe artifacts
+_tmp_*/
+_preview*/
+_preview_*/
+_chunk_test/
+_dl_probe/
+*.log
+windtest*.log
+
+# Local test / demo outputs
+android_test_out/
+apk_build/
+demo_export/
+*.png
+*.zip
+
+# Accidental / machine-specific junk
+New folder/
+%USERPROFILE%/
+.freebuff/
+
+# Secrets & sessions (never commit)
+*.session
+*.session-journal
+config.json

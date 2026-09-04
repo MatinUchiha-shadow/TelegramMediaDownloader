@@ -1,0 +1,152 @@
+/* ===== Telegram Media Downloader — Dark glass (matching mailbox) ===== */
+:root {
+  --win-bg: #1c2433;          /* پنجرهٔ تیره */
+  --sidebar: #151b27;
+  --content: #1f2736;         /* محتوا کمی روشن‌تر از سایدبار */
+  --card: #232c3d;            /* کارت */
+  --card-2: #2a3448;
+  --input: #11151f;
+  --text: #eef3fa;
+  --muted: #9aa6b8;
+  --accent: #33a1ff;
+  --accent2: #6a5cff;
+  --line: rgba(255, 255, 255, .09);
+  --radius: 14px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  font-family: "Segoe UI", "Segoe UI Variable", Vazirmatn, Tahoma, sans-serif;
+  color: var(--text); font-size: 13px;
+  /* رنگ پایهٔ ماتِ تیره — تضمین می‌کند هرگز سفید/شفاف نباشد */
+  background-color: #161d2b;
+  background:
+    radial-gradient(1200px 600px at 80% -10%, #2b3a55 0%, transparent 60%),
+    radial-gradient(900px 500px at -10% 110%, #23304a 0%, transparent 55%),
+    linear-gradient(160deg, #1d2636 0%, #141a27 100%);
+  overflow: hidden;
+}
+
+.app { display: flex; height: 100vh; }
+
+/* ---------- سایدبار ---------- */
+.sidebar {
+  width: 210px; flex: none;
+  background: var(--sidebar);
+  border-right: 1px solid var(--line);
+  display: flex; flex-direction: column; padding: 16px 10px;
+}
+.brand { display: flex; align-items: center; gap: 10px; padding: 4px 8px 20px; }
+.logo {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px; color: #fff; box-shadow: 0 4px 16px rgba(51, 161, 255, .45);
+}
+.brand-name { font-weight: 700; font-size: 16px; }
+
+.nav { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+.nav-item {
+  background: transparent; border: none; border-radius: 9px;
+  color: #b8c3d4; font-size: 13px; text-align: left;
+  padding: 11px 13px; cursor: pointer; transition: .15s; width: 100%;
+}
+.nav-item:hover { background: rgba(255, 255, 255, .07); }
+.nav-item.active { background: rgba(51, 161, 255, .28); color: #fff; font-weight: 600; }
+.sidebar-footer { border-top: 1px solid var(--line); padding-top: 10px; }
+
+/* ---------- محتوا ---------- */
+.content {
+  flex: 1; display: flex; flex-direction: column;
+  padding: 22px 28px; gap: 18px; overflow: hidden;
+}
+.page-title { font-size: 15px; font-weight: 600; color: var(--muted); letter-spacing: .4px; }
+
+/* ---------- کارت ---------- */
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .35);
+  overflow: hidden;
+  display: flex; flex-direction: column;
+}
+.card-head {
+  background: linear-gradient(90deg, #20293a, #252f44);
+  border-bottom: 1px solid var(--line);
+  padding: 14px 20px;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+}
+.card-head h2 { font-size: 15px; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 8px; }
+.card-head .sub { color: var(--muted); font-size: 11.5px; margin-top: 4px; line-height: 1.5; }
+.card-body { padding: 18px 20px; display: flex; flex-direction: column; gap: 14px; }
+
+/* ---------- دکمه‌ها ---------- */
+.btn {
+  background: #2e3a50; border: 1px solid var(--line);
+  border-radius: 8px; color: var(--text); padding: 9px 16px; font-size: 12.5px;
+  cursor: pointer; white-space: nowrap; transition: .15s; font-weight: 600;
+}
+.btn:hover { background: #394761; }
+.btn:disabled { opacity: .45; cursor: default; }
+.btn.primary { background: linear-gradient(135deg, var(--accent), #1f8fe0); color: #fff; }
+.btn.primary:hover { filter: brightness(1.08); }
+.btn.ghost { background: #27304300; background-color: #263148; }
+.icon-btn {
+  background: #2e3a50; border: none; border-radius: 8px;
+  color: var(--text); width: 32px; height: 32px; cursor: pointer; font-size: 15px;
+}
+.icon-btn:hover { background: #394761; }
+
+/* ---------- فیلدها ---------- */
+.field { position: relative; display: flex; align-items: center; }
+.field .field-icon { position: absolute; left: 12px; color: var(--muted); font-size: 14px; }
+.field input {
+  width: 100%; background: var(--input); border: 1px solid var(--line);
+  border-radius: 9px; color: var(--text); padding: 11px 12px 11px 36px; font-size: 13.5px; outline: none;
+}
+.field input::placeholder { color: #5f6c80; }
+.field input:focus { border-color: var(--accent); }
+.field input:disabled { opacity: .55; }
+.field input[readonly] { color: var(--muted); }
+.grow { flex: 1; }
+
+/* ---------- ردیف‌ها ---------- */
+.login-row { display: flex; align-items: center; gap: 12px; }
+.channel-row { display: flex; align-items: center; gap: 10px; flex-wrap: nowrap; }
+.path-row { display: flex; align-items: center; gap: 10px; }
+.msg { min-height: 16px; font-size: 12.5px; color: #6fdb8a; }
+.msg.err { color: #ff7b72; }
+.helper { color: var(--muted); font-size: 12px; }
+
+/* ---------- لاگ ---------- */
+.log-view {
+  background: var(--input); border: 1px solid var(--line); border-radius: 8px;
+  padding: 12px; font-family: Consolas, monospace; font-size: 11.5px; line-height: 1.55;
+  color: #9fc3e8; max-height: 420px; overflow: auto;
+  white-space: pre-wrap; word-break: break-word; margin: 0;
+}
+
+/* ---------- نوار وضعیت ---------- */
+.statusbar {
+  margin-top: auto; padding-top: 14px; border-top: 1px solid var(--line);
+  color: var(--muted); font-size: 12px;
+}
+
+/* ---------- اسکرول‌بار ---------- */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, .18); border-radius: 5px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, .3); }
+::-webkit-scrollbar-track { background: transparent; }
+
+/* ---------- چت‌ها ---------- */
+.chat-list { display: flex; flex-direction: column; gap: 6px; max-height: 320px; overflow: auto; }
+.chat-item {
+  display: flex; align-items: center; gap: 10px; background: var(--input);
+  border: 1px solid var(--line); border-radius: 8px; padding: 9px 13px; cursor: pointer;
+}
+.chat-item:hover { background: #171e2c; }
+.chat-item .t { font-weight: 600; }
+.chat-item .s { color: var(--muted); font-size: 11px; margin-inline-start: auto; }
+.chat-dl { margin-inline-start: 10px; padding: 5px 12px; font-size: 11.5px; }
+#chatsMsg { white-space: pre-line; line-height: 1.6; }

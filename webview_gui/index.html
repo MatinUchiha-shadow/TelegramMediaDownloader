@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="fa" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>Telegram Media Downloader</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+
+  <!-- ===== سایدبار چپ ===== -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="logo">✈</div>
+      <span class="brand-name">Telegram</span>
+    </div>
+    <nav class="nav">
+      <button class="nav-item active" data-page="browse">🗂&nbsp; Browse</button>
+      <button class="nav-item" data-page="chats">💬&nbsp; My Chats</button>
+      <button class="nav-item" data-page="downloads">⬇&nbsp; Downloads</button>
+      <button class="nav-item" data-page="api">🔌&nbsp; API</button>
+      <button class="nav-item" data-page="logs">📋&nbsp; Logs</button>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="nav-item" id="logoutBtn">🚪&nbsp; Logout</button>
+    </div>
+  </aside>
+
+  <!-- ===== محتوای اصلی ===== -->
+  <main class="content">
+    <span class="page-title" id="pageTitle">Browse</span>
+
+    <!-- ===== صفحهٔ Browse: ورود + Channel ===== -->
+    <div id="pageBrowse" class="page">
+
+      <!-- کارت ورود تلگرام -->
+      <section class="card" id="loginCard">
+        <div class="card-head">
+          <div>
+            <h2>Telegram Login</h2>
+            <p class="sub">Enter your phone → get the code from Telegram → if your account has a 2FA password, enter it here.</p>
+          </div>
+          <button class="icon-btn" id="settingsBtn" title="Settings">⚙</button>
+        </div>
+        <div class="card-body">
+          <div class="field">
+            <span class="field-icon">📞</span>
+            <input id="phone" type="tel" placeholder="Phone" autocomplete="off">
+          </div>
+          <div class="field">
+            <span class="field-icon">✉</span>
+            <input id="code" type="text" placeholder="Code" autocomplete="off" disabled>
+          </div>
+          <div class="field">
+            <span class="field-icon">🔒</span>
+            <input id="password" type="password" placeholder="2FA" autocomplete="off" disabled>
+          </div>
+          <div class="login-row">
+            <button class="btn primary" id="sendCodeBtn"><span>📞</span>&nbsp; Send Code</button>
+            <button class="btn primary" id="verifyBtn" style="display:none">✅&nbsp; Verify Code</button>
+            <span class="helper" id="loginHelper">Enter your phone number to log in</span>
+          </div>
+          <div id="loginMsg" class="msg"></div>
+        </div>
+      </section>
+
+      <!-- کارت Channel -->
+      <section class="card">
+        <div class="card-head">
+          <h2>📢&nbsp; Channel</h2>
+        </div>
+        <div class="card-body">
+          <p class="sub">@username or invite link — media files will be listed below.</p>
+          <div class="channel-row">
+            <div class="field grow">
+              <span class="field-icon">@</span>
+              <input id="channel" type="text" placeholder="@username or link" autocomplete="off">
+            </div>
+            <button class="btn primary" id="browseBtn">🔍&nbsp; Browse</button>
+            <button class="btn ghost" id="exportBtn">📄&nbsp; Export</button>
+            <button class="btn ghost" id="allBtn">⬇&nbsp; All</button>
+            <button class="btn ghost" id="openBtn">📂&nbsp; Open</button>
+          </div>
+          <div class="path-row">
+            <div class="field grow">
+              <span class="field-icon">🗀</span>
+              <input id="savePath" type="text" value="C:\Users\Matin_uchiha\Desktop\Telegram Downloads" readonly>
+            </div>
+            <button class="icon-btn" id="pathBtn">...</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- پنل API / تنظیمات -->
+      <section class="card settings-card" id="settingsCard" style="display:none">
+        <div class="card-head">
+          <h2>🔌&nbsp; API Settings</h2>
+        </div>
+        <div class="card-body">
+          <p class="sub">از my.telegram.org گرفته می‌شود. اگر با این که عمومی FloodWait می‌گیرید، مقادیر خودتان را بگذارید.</p>
+          <div class="field"><span class="field-icon">🆔</span>
+            <input id="apiId" type="text" placeholder="api_id" autocomplete="off"></div>
+          <div class="field"><span class="field-icon">🔑</span>
+            <input id="apiHash" type="text" placeholder="api_hash" autocomplete="off"></div>
+          <div class="login-row">
+            <div class="field grow"><span class="field-icon">🌐</span>
+              <input id="proxyHost" type="text" placeholder="proxy host (127.0.0.1)" autocomplete="off"></div>
+            <div class="field" style="max-width:110px"><input id="proxyPort" type="text" placeholder="port" autocomplete="off" style="padding-left:12px"></div>
+          </div>
+          <div class="login-row">
+            <button class="btn primary" id="saveApiBtn">💾&nbsp; Save</button>
+            <span id="apiMsg" class="msg"></span>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ===== صفحهٔ My Chats ===== -->
+    <div id="pageChats" class="page" style="display:none">
+      <section class="card">
+        <div class="card-head">
+          <h2>💬&nbsp; My Chats</h2>
+          <button class="btn ghost" id="refreshChatsBtn">🔄&nbsp; Refresh</button>
+        </div>
+        <div class="card-body">
+          <div id="chatsMsg" class="msg"></div>
+          <div class="chat-list" id="chatList"></div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ===== صفحهٔ لاگ ===== -->
+    <div id="pageLogs" class="page" style="display:none">
+      <section class="card">
+        <div class="card-head">
+          <h2>📋&nbsp; Logs</h2>
+          <button class="btn ghost" id="refreshLogsBtn">🔄&nbsp; Refresh</button>
+        </div>
+        <div class="card-body">
+          <div id="logsMsg" class="msg"></div>
+          <pre class="log-view" id="logView"></pre>
+        </div>
+      </section>
+    </div>
+
+    <!-- ===== نوار وضعیت ===== -->
+    <div class="statusbar"><span id="status">Ready</span></div>
+  </main>
+</div>
+<script src="api.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
