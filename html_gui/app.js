@@ -70,7 +70,7 @@
     var phone = $("phone").value.trim();
     var ph = $("proxy_host").value.trim();
     var pp = $("proxy_port").value.trim();
-    if (!phone) { setMsg("loginMsg", "شمارهٔ موبایل را وارد کنید (مثلاً 09929184925).", true); return; }
+    if (!phone) { setMsg("loginMsg", "شمارهٔ موبایل را وارد کنید (مثلاً 09990001111).", true); return; }
     this.disabled = true;
     setMsg("loginMsg", "در حال ارسال کد…");
     callAPI("config", { api_id: "", api_hash: "", phone: phone, proxy_host: ph, proxy_port: pp })
@@ -85,7 +85,7 @@
         $("sendCodeBtn").disabled = false;
         var m = e.message || "خطا";
         if (m.indexOf("FloodWait") !== -1) m = "تلگرام محدودیت موقت گذاشته — چند دقیقه صبر و دوباره تلاش کنید.";
-        if (m.indexOf("PHONE_NUMBER_INVALID") !== -1) m = "شمارهٔ موبایل درست نیست (مثلاً 09929184925).";
+        if (m.indexOf("PHONE_NUMBER_INVALID") !== -1) m = "شمارهٔ موبایل درست نیست (مثلاً 09990001111).";
         setMsg("loginMsg", "❌ " + m, true);
       });
   });

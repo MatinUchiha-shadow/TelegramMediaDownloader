@@ -28,7 +28,7 @@ def main():
         try:
             js = ("JSON.stringify({" +
                   "setPhoneType: typeof pywebview.api.set_phone," +
-                  "setPhoneResult: pywebview.api.set_phone('09929184925')," +
+                  "setPhoneResult: pywebview.api.set_phone('09990001111')," +
                   "plain: pywebview.api.plain_value()," +
                   "sendCodeType: typeof pywebview.api.send_code," +
                   "sendCodeIsPromise: (pywebview.api.send_code('x') instanceof Promise)" +

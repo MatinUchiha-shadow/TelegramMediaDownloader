@@ -18,7 +18,7 @@ def main():
             w=webview.windows[0]
             # قبل از کلیک، مستقیم تست کن متد الان function است یا نه
             before=w.evaluate_js("typeof window.pywebview.api.set_phone")
-            w.evaluate_js("document.getElementById('phone').value='09929184925'")
+            w.evaluate_js("document.getElementById('phone').value='09990001111'")
             w.evaluate_js("document.getElementById('sendCodeBtn').click()")
             time.sleep(7)
             state=w.evaluate_js("JSON.stringify({before:'" + str(before) + "',msg:document.getElementById('loginMsg').textContent,msgClass:document.getElementById('loginMsg').className})")

@@ -1,1 +1,0 @@
-{"setPhoneType":"function","setPhoneResult":{},"plain":{},"sendCodeType":"function","sendCodeIsPromise":true}

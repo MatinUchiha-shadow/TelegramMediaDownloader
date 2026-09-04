@@ -38,7 +38,7 @@ def main():
             # بررسی دسترسی بریج
             bridge = w.evaluate_js("typeof window.pywebview + '/' + typeof window.pywebview.api")
             # شماره را بگذار و کلیک کن
-            w.evaluate_js("document.getElementById('phone').value='09929184925'")
+            w.evaluate_js("document.getElementById('phone').value='09990001111'")
             w.evaluate_js("document.getElementById('sendCodeBtn').click()")
             # چند ثانیه بعد نتیجه را بخوان
             time.sleep(8)

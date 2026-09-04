@@ -18,7 +18,7 @@ def main():
             w=webview.windows[0]
             t0=w.evaluate_js("typeof window.pywebview.api.set_phone")
             # فراخوانی مستقیم و گرفتن نتیجه (باید Promise باشد یا مقدار)
-            r=w.evaluate_js("window.pywebview.api.set_phone('09929184925') ")
+            r=w.evaluate_js("window.pywebview.api.set_phone('09990001111') ")
             t1=w.evaluate_js("typeof window.pywebview.api.set_phone")
             state="t0="+str(t0)+" | direct="+repr(r)+" | t1="+str(t1)
             R.write_text(state,encoding="utf-8"); print(state)

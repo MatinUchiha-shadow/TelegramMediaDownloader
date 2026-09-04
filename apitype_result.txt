@@ -1,1 +1,0 @@
-{"set_phone":"function","send_code":"function","login":"function","browse_channel":"function","export_all":"function","choose_save_dir":"function","logout":"function"}

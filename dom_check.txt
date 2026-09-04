@@ -1,1 +1,0 @@
-{"title":"Telegram Media Downloader","bgIsDark":"rgba(0, 0, 0, 0)","cards":2,"sidebar":true,"navItems":5,"hasPhone":true,"hasChannel":true,"status":"Ready"}

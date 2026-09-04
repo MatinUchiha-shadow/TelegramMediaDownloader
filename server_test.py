@@ -50,7 +50,7 @@ def main():
     print("CONFIG:", st, "ok=", cfg.get("ok"), "phone=", cfg.get("result", {}).get("phone"))
 
     # 5) save config POST
-    st, r = post(base + "/api/config", {"api_id": "", "api_hash": "", "phone": "09929184925",
+    st, r = post(base + "/api/config", {"api_id": "", "api_hash": "", "phone": "09990001111",
                                         "proxy_host": "127.0.0.1", "proxy_port": "1080"})
     print("SAVE_CONFIG:", st, "ok=", r.get("ok"))
 

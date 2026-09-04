@@ -8,12 +8,15 @@ build/
 __pycache__/
 *.py[cod]
 
-# Temp / preview / probe artifacts
+# Temp / preview / probe artifacts (may contain personal account data)
 _tmp_*/
 _preview*/
 _preview_*/
 _chunk_test/
 _dl_probe/
+*_result.txt
+*_probe.txt
+dom_check.txt
 *.log
 windtest*.log
 

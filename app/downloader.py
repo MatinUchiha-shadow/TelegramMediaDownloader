@@ -152,8 +152,9 @@ class DownloadWorker(QThread):
 
     # ------- هسته -------
     async def _main(self) -> None:
-        from app.config import session_path
+        from app.config import require_api, session_path
 
+        require_api(self.cfg)
         client = TelegramClient(
             str(self.session or session_path()),
             int(self.cfg["api_id"]),
@@ -534,8 +535,9 @@ async def export_chat_async(cfg: dict, dialog: dict, export_root: Path,
     برمی‌گرداند آمار دانلود. progress(step: str, done: int, total: int) اختیاری است.
     """
     from telethon import TelegramClient
-    from app.config import session_path, proxy_tuple
+    from app.config import require_api, session_path, proxy_tuple
 
+    require_api(cfg)
     options = options or {}
     chat_dir = export_root / "chats" / sanitize_name(dialog["title"])
     chat_dir.mkdir(parents=True, exist_ok=True)

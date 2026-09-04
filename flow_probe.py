@@ -37,7 +37,7 @@ def main():
             def js(e): return w.evaluate_js(e)
 
             # 1) send code
-            js("document.getElementById('phone').value='09929184925'")
+            js("document.getElementById('phone').value='09990001111'")
             js("document.getElementById('sendCodeBtn').click()")
             time.sleep(10)
             step1 = {

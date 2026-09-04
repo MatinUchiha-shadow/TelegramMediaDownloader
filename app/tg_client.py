@@ -58,8 +58,9 @@ def _proxy(cfg: dict):
 
 
 def _client(cfg: dict, session: Path) -> TelegramClient:
-    from app.config import session_path
+    from app.config import require_api, session_path
 
+    require_api(cfg)
     return TelegramClient(
         str(session_path() if session is None else session),
         int(cfg["api_id"]),
@@ -81,8 +82,8 @@ async def _handle_flood(e: FloodWaitError) -> None:
 
 def normalize_phone(phone: str) -> str:
     """تبدیل شماره به فرمت بین‌المللی:
-    09929184925 → +989929184925
-    +989929184925 → بدون تغییر
+    09990001111 → +989990001111
+    +989990001111 → بدون تغییر
     """
     p = phone.strip().replace(" ", "").replace("-", "").replace("(", "").replace(")", "")
     if p.startswith("00"):
@@ -93,7 +94,7 @@ def normalize_phone(phone: str) -> str:
         if p.startswith("0") and len(p) >= 10 and p[1] == "9":
             p = "+98" + p[1:]  # 0992... → +98992...
         elif p.startswith("9") and len(p) == 10:
-            p = "+98" + p  # 9929184925 → +989929184925
+            p = "+98" + p  # 9929184925 → +989990001111
         else:
             p = "+" + p
     return p

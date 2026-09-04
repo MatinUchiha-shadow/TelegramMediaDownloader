@@ -49,7 +49,7 @@ def main():
             js("document.getElementById('phone').value=''; document.getElementById('sendCodeBtn').click()"); time.sleep(1)
             out["send_empty"] = js("document.getElementById('loginMsg').textContent")
 
-            js("document.getElementById('phone').value='09929184925'; document.getElementById('sendCodeBtn').click()"); time.sleep(6)
+            js("document.getElementById('phone').value='09990001111'; document.getElementById('sendCodeBtn').click()"); time.sleep(6)
             out["send_phone"] = js("document.getElementById('loginMsg').textContent")
 
             js("document.getElementById('channel').value=''; document.getElementById('browseBtn').click()"); time.sleep(1)

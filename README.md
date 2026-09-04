@@ -53,7 +53,7 @@ python run.py
 
 ```
 TelegramMediaDownloader Exports/
-└── Matin_Uchiha_export/          ← نام حساب شما
+└── YourName_export/              ← نام حساب شما
     ├── index.html                ← لیست چت‌ها
     ├── assets/                   ← استایل و اسکریپت
     └── chats/
