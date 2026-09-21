@@ -5,6 +5,7 @@
 بررسی: خروجی HTML، حذف پیام تکراری، تاریخ شمسی، ساخت پروژهٔ اندروید.
 """
 import json
+import re
 import shutil
 import sys
 import tempfile
@@ -85,6 +86,12 @@ def main() -> int:
         check("عکس در chunk رندر شد", "photos/000002_x.jpg" in c0)
         check("فرستنده در chunk هست", "علی" in c0)
         check("فایل موتور (app.js) موجود", (export_root / "assets" / "app.js").exists())
+        # رگرسیون باگ دم: count باید همه ورودی‌ها باشد (۲ پیام + ۱ جداکننده روز = ۳)
+        # تا آخرین ورودی‌ها هیچ‌وقت از رندر جا نمانند
+        m = re.search(r"window\.CHAT_META = (\{.*?\});", page)
+        meta = json.loads(m.group(1)) if m else {}
+        check("شمارش ایندکس شامل جداکننده روز (دم جا نمی‌ماند)",
+              meta.get("count") == 3 and meta.get("messages") == 2)
         index = (export_root / "index.html").read_text(encoding="utf-8")
         check("index چت را نشان می‌دهد", "Test Chat" in index and "پیام" in index)
         check("assets ساخته شد", (export_root / "assets" / "style.css").exists())

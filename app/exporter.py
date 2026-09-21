@@ -269,6 +269,7 @@ def generate_chat_page(chat_dir: Path, export_root: Path) -> dict:
     media_count = 0
     text_count = 0
     msg_count = 0
+    sep_count = 0
     first_date = last_date = None
     seen_days: set[str] = set()
 
@@ -328,6 +329,7 @@ def generate_chat_page(chat_dir: Path, export_root: Path) -> dict:
                 if day not in seen_days:
                     seen_days.add(day)
                     push_entry({"dy": day}, 44)
+                    sep_count += 1
                 first_date = first_date or iso
                 last_date = iso
 
@@ -347,9 +349,15 @@ def generate_chat_page(chat_dir: Path, export_root: Path) -> dict:
 
         flush_chunk()
 
+        # count = فضای ایندکس موتور نمایش = همه ورودی‌ها (پیام + جداکننده روز).
+        # قبلاً فقط msg_count بود و چون جداکننده‌ها هم ورودی‌اند، همه ایندکس‌ها
+        # بعد از اولین جداکننده جابه‌جا می‌شد و دقیقاً به‌اندازه تعداد روزها
+        # (آخرین ورودی‌ها) هیچ‌وقت رندر نمی‌شد — یعنی دم چت جا می‌ماند!
+        # messages = تعداد واقعی پیام‌ها، فقط برای نمایش.
         meta = {
             "title": title,
-            "count": msg_count,
+            "count": msg_count + sep_count,
+            "messages": msg_count,
             "media": media_count,
             "text": text_count,
         }
@@ -1120,7 +1128,7 @@ JS = """// آرشیو تلگرام — موتور مشاهدهٔ چت (سبک و
     var el = document.getElementById('posInfo');
     if (!el) return;
     var pct = N ? Math.round((idx / N) * 100) : 0;
-    el.textContent = META.count + ' پیام · ' + (META.media || 0) + ' رسانه · ' + pct + '٪';
+    el.textContent = (META.messages || META.count) + ' پیام · ' + (META.media || 0) + ' رسانه · ' + pct + '٪';
   }
 
   var ticking = false;
@@ -1131,6 +1139,16 @@ JS = """// آرشیو تلگرام — موتور مشاهدهٔ چت (سبک و
       ticking = false;
       if (N === 0) return;
       var idx = visibleIndex();
+      // اگر کاربر ته لیست است، کل دم را رندر کن تا با خطای تخمین ارتفاع هم ته همیشه reachable بماند
+      try {
+        if (getScrollTop() > 200 &&
+            getScrollTop() + window.innerHeight >= document.body.scrollHeight - 60 &&
+            winEnd < N) {
+          renderWindow(N - 1);
+          updatePosInfo(N - 1);
+          return;
+        }
+      } catch (e) {}
       if (winStart < 0 || idx < winStart + LOWER_GUARD || idx >= winEnd - UPPER_GUARD) {
         renderWindow(idx);
       }
