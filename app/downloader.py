@@ -202,20 +202,24 @@ class DownloadWorker(QThread):
         }
 
         try:
+            # بدون min_id: همراه reverse دم (پیام‌های جدید) را خراب می‌کند، پس حلقه
+            # کامل می‌زنیم و seen پیام‌های قدیمی را رد می‌کند — دم هم گرفته می‌شود.
             kwargs = dict(reverse=True, wait_time=ITER_WAIT_TIME)
-            if last_id:
-                kwargs["min_id"] = last_id
             try:
                 iterator = client.iter_messages(entity, **kwargs)
             except TypeError:
                 # اگر نسخهٔ telethon از min_id پشتیبانی نکند، بدون آن ادامه می‌دهیم
                 kwargs.pop("min_id", None)
                 iterator = client.iter_messages(entity, **kwargs)
+            walked = len(seen)
             async for msg in iterator:
                 if self._stop:
                     stats["stopped"] = True
                     break
                 if msg is None or msg.id in seen:
+                    walked += 1
+                    if walked % 200 == 0:
+                        self._emit_progress(walked, total)
                     continue
                 seen.add(msg.id)
                 last_processed_id = msg.id
@@ -526,6 +530,26 @@ def rewrite_media_fields(chat_dir: Path, updates: dict[int, str]) -> int:
 
 
 # ---------------------------------------------------------------------------
+# گرفتن دم پیام‌ها (جدیدتر از last_id) به ترتیب صعودی.
+# چرا لازم است؟ iter_messages با reverse=True همراه min_id دم را برنمی‌گرداند:
+# تلگرام offset را همان‌جا (min_id) می‌گذارد و همان پیام‌های قدیمی را دوباره
+# می‌دهد، پس ادامه‌دانلودها هیچ‌وقت به پیام‌های جدید نمی‌رسیدند.
+# راه‌حل: دم را صریحاً با ترتیب نزولی پیش‌فرض (reverse=False) و min_id می‌گیریم
+# که دقیقاً idهای بزرگ‌تر از last_id را می‌دهد، بعد صعودی مرتب می‌کنیم.
+# ---------------------------------------------------------------------------
+async def fetch_tail_messages(client, entity, last_id: int) -> list:
+    if not last_id:
+        return []
+    tail: list = []
+    async for msg in client.iter_messages(entity, min_id=last_id, wait_time=ITER_WAIT_TIME):
+        if msg is None:
+            continue
+        tail.append(msg)
+    tail.sort(key=lambda m: int(getattr(m, "id", 0)))
+    return tail
+
+
+# ---------------------------------------------------------------------------
 # نسخهٔ async خالص (بدون Qt) — برای backend پنجرهٔ pywebview
 # ---------------------------------------------------------------------------
 async def export_chat_async(cfg: dict, dialog: dict, export_root: Path,
@@ -653,17 +677,7 @@ async def export_chat_async(cfg: dict, dialog: dict, export_root: Path,
         last_id = saved_state.get("last_id", 0)
         fh = open(chat_dir / MESSAGES_FILE, "a", encoding="utf-8")
         try:
-            # دانلود از اولین پیام به آخرین (reverse=True = قدیمی→جدید)
-            # min_id باعث می‌شود پیام‌های قبلاً دانلودشده دوباره پردازش نشوند
-            kwargs = dict(reverse=True, wait_time=ITER_WAIT_TIME)
-            if last_id:
-                kwargs["min_id"] = last_id
-            try:
-                iterator = client.iter_messages(entity, **kwargs)
-            except TypeError:
-                kwargs.pop("min_id", None)
-                iterator = client.iter_messages(entity, **kwargs)
-
+            # شاخه‌بندی ادامه/تازه پایین‌تر انجام می‌شود (handle_new + دم/حلقه کامل).
             # — دانلود موازی: پیام‌ها را دسته‌ای جمع می‌کنیم و رسانه‌ها را با هم دانلود می‌کنیم —
             # این باعث می‌شود با اینترنت پرسرعت و پینگ 213ms، سرعت ~4-5 برابر شود
             # ولی همهٔ فایل‌ها (voice/image/video/document/sticker) همچنان کامل دانلود می‌شوند
@@ -733,15 +747,9 @@ async def export_chat_async(cfg: dict, dialog: dict, export_root: Path,
                         pass
                 buffer.clear()
 
-            async for msg in iterator:
-                if msg is None:
-                    continue
-                if msg.id in existing:
-                    # پیام قدیمی — قبلاً شمرده شده (stats از len(existing) شروع شد)،
-                    # فقط اگر buffer پر است فلاش کن و رد شو (بدون دانلود مجدد).
-                    if len(buffer) >= BATCH_FLUSH:
-                        await _flush_buffer()
-                    continue
+            async def handle_new(msg) -> None:
+                """پردازش یک پیام جدید: رکورد + تسک دانلود موازی + فلاش به‌موقع."""
+                nonlocal queued
                 service = msg.action is not None
                 text = (msg.text or msg.message or "").strip() if not service else ""
                 media_type = None
@@ -796,6 +804,30 @@ async def export_chat_async(cfg: dict, dialog: dict, export_root: Path,
                     progress("downloading", queued, total)
                 if len(buffer) >= BATCH_FLUSH or pending_media >= MAX_CONCURRENT_DOWNLOADS:
                     await _flush_buffer()
+
+            if last_id and existing:
+                # ادامه از داده قبلی: فقط دم (پیام‌های جدیدتر از last_id).
+                # عمداً از حلقه اصلی با min_id استفاده نمی‌کنیم (توضیح در fetch_tail_messages).
+                log.info("ادامه از پیام %s — گرفتن پیام‌های جدید…", last_id)
+                for msg in await fetch_tail_messages(client, entity, last_id):
+                    if msg is None or msg.id in existing:
+                        continue
+                    await handle_new(msg)
+            else:
+                # تازه: همه از اولین پیام تا آخرین (reverse=True = قدیمی→جدید).
+                # min_id اینجا گذاشته نمی‌شود چون همراه reverse دم را خراب می‌کند.
+                iterator = client.iter_messages(
+                    entity, reverse=True, wait_time=ITER_WAIT_TIME)
+                async for msg in iterator:
+                    if msg is None:
+                        continue
+                    if msg.id in existing:
+                        # پیام قدیمی — قبلاً شمرده شده (stats از len(existing) شروع شد)،
+                        # فقط اگر buffer پر است فلاش کن و رد شو (بدون دانلود مجدد).
+                        if len(buffer) >= BATCH_FLUSH:
+                            await _flush_buffer()
+                        continue
+                    await handle_new(msg)
             # فلاش باقی‌مانده
             await _flush_buffer()
             # ذخیرهٔ state نهایی
